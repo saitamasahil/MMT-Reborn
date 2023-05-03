@@ -72,7 +72,14 @@ mkdir -p "$MODPATH"
 unzip -o "$ZIPFILE" -d "$MODPATH" >&2
 
 # Load install script
-source "$MODPATH/setup.sh"
+if [[ -f "$MODPATH/setup.sh" ]]; then
+  source "$MODPATH/setup.sh"
+elif [[ -f "$MODPATH/customize.sh" ]]; then
+  source "$MODPATH/customize.sh"
+else
+  ui_print "[!] Could not find installation script (setup.sh or customize.sh)!"
+  exit 1
+fi
 
 # Remove all old files before doing installation if want to
 "$CLEANSERVICE" && rm -rf "/data/adb/modules/$MODID"
